@@ -5,7 +5,7 @@ import FavoritesItemCard from './FavoritesItemCard';
 import CartItem from './CartItem';
 import HeaderBar from './HeaderBar';
 import OrderHistoryCard from './OrderHistoryCard';
-import ImageBackgroundImage from './ImageBackgroundImage';
+import ImageBackgroundInfo from './ImageBackgroundInfo';
 import PaymentFooter from './PaymentFooter';
 import PaymentMethod from './PaymentMethod';
 import ProfilePic from './ProfilePic';
@@ -21,7 +21,7 @@ export {
   CartItem,
   HeaderBar,
   OrderHistoryCard,
-  ImageBackgroundImage,
+  ImageBackgroundInfo,
   PaymentFooter,
   PaymentMethod,
   ProfilePic,

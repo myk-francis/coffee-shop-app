@@ -11,7 +11,7 @@ export const useStore = create(
       CoffeeList: CoffeeData,
       BeanList: BeansData,
       CartPrice: 0,
-      FavouriteList: [],
+      FavoritesList: [],
       CartList: [],
       OrderHistoryList: [],
       addToCart: (cartItem: any) =>
