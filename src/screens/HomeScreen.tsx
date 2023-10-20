@@ -1,7 +1,26 @@
-import {View, Text} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+} from 'react-native';
 import React from 'react';
 import {useStore} from '../store/store';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {
+  BORDERRADIUS,
+  COLORS,
+  FONTFAMILY,
+  FONTSIZE,
+  SPACING,
+} from '../theme/theme';
+import {HeaderBar} from '../components';
+import CustomIcon from '../components/CustomIcon';
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -32,7 +51,7 @@ const HomeScreen = () => {
   const [categories, setCategories] = React.useState(
     getCategoriesFromData(CoffeeList),
   );
-  const [searchText, setSearchText] = React.useState(undefined);
+  const [searchText, setSearchText] = React.useState('');
   const [categoryIndex, setCategoryIndex] = React.useState({
     index: 0,
     category: categories[0],
@@ -41,13 +60,182 @@ const HomeScreen = () => {
     getCoffeeList(categoryIndex.category, CoffeeList),
   );
 
+  const ListRef: any = React.useRef<FlatList>();
   const tabBarHeight = useBottomTabBarHeight();
 
+  const searchCoffee = (search: string) => {
+    if (search != '') {
+      ListRef?.current?.scrollToOffset({
+        animated: true,
+        offset: 0,
+      });
+      setCategoryIndex({index: 0, category: categories[0]});
+      setSortedCoffee([
+        ...CoffeeList.filter((item: any) =>
+          item.name.toLowerCase().includes(search.toLowerCase()),
+        ),
+      ]);
+    }
+  };
+
   return (
-    <View>
-      <Text>HomeScreen</Text>
+    <View style={styles.ScreenContainer}>
+      <StatusBar backgroundColor={COLORS.primaryBlackHex} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.ScrollViewFlex}>
+        {/* App Header */}
+        <HeaderBar />
+
+        <Text style={styles.ScreenTitle}>
+          Find the best{'\n'}coffee for you
+        </Text>
+
+        {/* Search Input  */}
+        <View style={styles.InputContainerComponent}>
+          <TouchableOpacity
+            onPress={() => {
+              searchCoffee(searchText);
+            }}>
+            <CustomIcon
+              style={styles.InputIcon}
+              name="search"
+              size={FONTSIZE.size_18}
+              color={
+                searchText.length > 0
+                  ? COLORS.primaryOrangeHex
+                  : COLORS.primaryLightGreyHex
+              }
+            />
+          </TouchableOpacity>
+
+          <TextInput
+            placeholder="Find Your Coffee..."
+            value={searchText}
+            onChangeText={text => {
+              setSearchText(text);
+              searchCoffee(text);
+            }}
+            placeholderTextColor={COLORS.primaryLightGreyHex}
+            style={styles.TextInputContainer}
+          />
+        </View>
+
+        {/* Category ScrollView */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.CategoryScrollViewStyle}>
+          {categories.map((data, index) => (
+            <View
+              key={index.toString()}
+              style={styles.CategoryScrollViewContainer}>
+              <TouchableOpacity
+                style={styles.CategoryScrollViewItem}
+                onPress={() => {
+                  ListRef?.current?.scrollToOffset({
+                    animated: true,
+                    offset: 0,
+                  });
+                  setCategoryIndex({index: index, category: categories[index]});
+                  setSortedCoffee([
+                    ...getCoffeeList(categories[index], CoffeeList),
+                  ]);
+                }}>
+                <Text
+                  style={[
+                    styles.CategoryText,
+                    categoryIndex.index === index
+                      ? {color: COLORS.primaryOrangeHex}
+                      : {},
+                  ]}>
+                  {data}
+                </Text>
+                {categoryIndex.index === index ? (
+                  <View style={styles.ActiveCategory} />
+                ) : (
+                  <></>
+                )}
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+      </ScrollView>
     </View>
   );
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  ScreenContainer: {
+    flex: 1,
+    backgroundColor: COLORS.primaryBlackHex,
+  },
+  ScrollViewFlex: {
+    flexGrow: 1,
+  },
+  ScreenTitle: {
+    fontSize: FONTSIZE.size_28,
+    fontFamily: FONTFAMILY.poppins_semibold,
+    color: COLORS.primaryWhiteHex,
+    paddingLeft: SPACING.space_30,
+  },
+  InputContainerComponent: {
+    flexDirection: 'row',
+    margin: SPACING.space_30,
+    borderRadius: BORDERRADIUS.radius_20,
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    alignItems: 'center',
+  },
+  InputIcon: {
+    marginHorizontal: SPACING.space_20,
+  },
+  TextInputContainer: {
+    flex: 1,
+    height: SPACING.space_20 * 3,
+    fontFamily: FONTFAMILY.poppins_medium,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryWhiteHex,
+  },
+  CategoryScrollViewStyle: {
+    paddingHorizontal: SPACING.space_20,
+    marginBottom: SPACING.space_20,
+  },
+  CategoryScrollViewContainer: {
+    paddingHorizontal: SPACING.space_15,
+  },
+  CategoryScrollViewItem: {
+    alignItems: 'center',
+  },
+  CategoryText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.primaryLightGreyHex,
+    marginBottom: SPACING.space_4,
+  },
+  ActiveCategory: {
+    height: SPACING.space_10,
+    width: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_10,
+    backgroundColor: COLORS.primaryOrangeHex,
+  },
+  FlatListContainer: {
+    gap: SPACING.space_20,
+    paddingVertical: SPACING.space_20,
+    paddingHorizontal: SPACING.space_30,
+  },
+  EmptyListContainer: {
+    width: Dimensions.get('window').width - SPACING.space_30 * 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: SPACING.space_36 * 3.6,
+  },
+  CoffeeBeansTitle: {
+    fontSize: FONTSIZE.size_18,
+    marginLeft: SPACING.space_30,
+    marginTop: SPACING.space_20,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.secondaryLightGreyHex,
+  },
+});
