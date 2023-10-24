@@ -1,14 +1,33 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
+import LottieView from 'lottie-react-native';
+import {COLORS} from '../theme/theme';
 
-const PopUpAnimation = () => {
+interface PopUpAnimationProps {
+  style: any;
+  source: any;
+}
+
+const PopUpAnimation: React.FC<PopUpAnimationProps> = ({style, source}) => {
   return (
-    <View>
-      <Text>PopUpAnimation</Text>
+    <View style={styles.LottieAnimationContainer}>
+      <LottieView style={style} source={source} autoPlay loop={false} />
     </View>
   );
 };
 
-export default PopUpAnimation;
+const styles = StyleSheet.create({
+  LottieAnimationContainer: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: COLORS.secondaryBlackRGBA,
+    justifyContent: 'center',
+  },
+});
 
-const styles = StyleSheet.create({});
+export default PopUpAnimation;
