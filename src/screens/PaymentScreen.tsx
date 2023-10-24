@@ -29,18 +29,18 @@ const PaymentList = [
     isIcon: true,
   },
   {
-    name: 'Google Pay',
-    icon: require('../assets/app_images/gpay.png'),
+    name: 'Tigo Pesa',
+    icon: require('../assets/app_images/tigo.png'),
     isIcon: false,
   },
   {
-    name: 'Apple Pay',
-    icon: require('../assets/app_images/applepay.png'),
+    name: 'Airtel Money',
+    icon: require('../assets/app_images/airtel.png'),
     isIcon: false,
   },
   {
-    name: 'Amazon Pay',
-    icon: require('../assets/app_images/amazonpay.png'),
+    name: 'M-pesa',
+    icon: require('../assets/app_images/mpesa.png'),
     isIcon: false,
   },
 ];
